@@ -262,9 +262,3 @@ This project demonstrates concepts from the Operations Research syllabus includi
 ## License / dataset attribution
 
 The application code can be used for educational purposes. The Olist dataset remains subject to its original source terms and attribution requirements.
-
-## Status
-
-**Phase 3.1 — GitHub-ready cleanup: complete**
-
-Before public submission, run the release gate and verify the local Streamlit smoke test in the target environment.
