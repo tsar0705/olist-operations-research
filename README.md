@@ -1,50 +1,196 @@
 # Olist Operations Research Dashboard
 
-A full-stack-style Streamlit decision-support dashboard built for an Operations Research course project using the publicly available **Brazilian E-Commerce by Olist** dataset.
+A decision-support dashboard for **Operations Research-based logistics optimization**, developed using the publicly available **Brazilian E-Commerce by Olist** dataset.
 
-The application loads the nine Olist CSV tables, validates the data, constructs the canonical Phase 1 analytical bundle, solves two optimization models, performs sensitivity analysis, visualizes the resulting logistics network, and provides downloadable results.
+The project combines real-world e-commerce data preprocessing, geographic analysis, mathematical optimization, sensitivity analysis, validation, and an interactive Streamlit dashboard.
 
-## What the project does
+**GitHub:** https://github.com/tsar0705/olist-operations-research
 
-### Model 1 — Capacitated Facility Location + Transportation
+---
 
-The model decides:
+## Project Overview
 
-- which candidate distribution hubs to open;
-- how much demand to ship from each opened hub to each customer state.
+The objective of this project is to demonstrate how Operations Research techniques can be applied to a real e-commerce logistics problem.
 
-Objective:
+The application provides an end-to-end workflow:
 
-\[
-\min \sum_i F_i y_i + \sum_{i,j} c_{ij}x_{ij}
-\]
+```text
+Olist CSV Data
+      ↓
+Schema & Data Validation
+      ↓
+Geographic Preprocessing
+      ↓
+Demand & Capacity Construction
+      ↓
+Transportation-Cost Calibration
+      ↓
+Optimization Models
+      ↓
+Sensitivity Analysis
+      ↓
+Interactive Dashboard
+      ↓
+Results, Comparison & Downloads
+```
 
-subject to demand satisfaction, hub capacity, hub-opening, and non-negativity/integrality constraints.
+The dashboard allows users to:
 
-### Model 2 — Seller-State Assignment
+* load and validate the Olist dataset;
+* generate descriptive statistics on demand;
+* analyze customer and seller geography;
+* construct logistics demand and capacity inputs;
+* solve two different optimization models;
+* perform sensitivity analysis;
+* visualize optimized logistics flows;
+* compare optimization strategies;
+* download model outputs and results.
 
-The model assigns each customer state to a single seller state while respecting seller-state capacity.
+---
 
-This gives a useful OR comparison between:
+# Operations Research Models
 
-- flexible multi-source hub allocation; and
-- rigid single-source assignment.
+## Model 1 — Capacitated Facility Location + Transportation
 
-### Sensitivity analysis
+Model 1 determines:
 
-The dashboard supports the validated Phase 1 sensitivity experiments, including:
+1. which candidate distribution hubs should be opened; and
+2. how much demand should be transported from each opened hub to each customer state.
 
-- facility fixed-cost sensitivity;
-- capacity sensitivity;
-- demand-growth sensitivity;
-- transportation-cost stress;
-- fixed-cost × capacity scenarios;
-- Model 2 capacity sensitivity;
-- transportation-only capacity benchmarking.
+### Decision variables
 
-## Dataset
+$$
+y_i =
+\begin{cases}
+1, & \text{if candidate hub } i \text{ is opened},\\
+0, & \text{otherwise}.
+\end{cases}
+$$
 
-The project uses the nine Olist tables:
+$$
+x_{ij} \geq 0
+$$
+
+where $x_{ij}$ represents the quantity transported from hub $i$ to customer region $j$.
+
+
+### Model 1 notation
+
+| Symbol | Meaning |
+|---|---|
+| $i$ | Candidate hub / facility |
+| $j$ | Customer demand region / state |
+| $D_j$ | Demand at customer region $j$ |
+| $Cap_i$ | Capacity of candidate hub $i$ |
+| $F_i$ | Fixed cost of opening hub $i$ |
+| $C_{ij}$ | Unit transportation cost from hub $i$ to region $j$ |
+| $x_{ij}$ | Quantity shipped from hub $i$ to region $j$ |
+| $y_i$ | Binary hub-opening decision |
+
+
+### Objective
+
+$$
+\min
+\left(
+\sum_i F_i y_i
++
+\sum_i \sum_j C_{ij}x_{ij}
+\right)
+$$
+
+where:
+
+* $F_i$ = fixed cost of opening hub $i$;
+* $C_{ij}$ = transportation cost per unit from hub $i$ to customer region $j$;
+* $x_{ij}$ = shipment quantity;
+* $y_i$ = hub-opening decision.
+
+### Main constraints
+
+**Demand satisfaction**
+
+$$
+\sum_i x_{ij} = D_j
+\qquad \forall j
+$$
+
+**Hub capacity**
+
+$$
+\sum_j x_{ij} \leq Cap_i y_i
+\qquad \forall i
+$$
+
+**Hub-opening decision**
+
+$$
+y_i \in \{0,1\}
+$$
+
+**Shipment non-negativity**
+
+$$
+x_{ij} \geq 0
+$$
+
+This is a mixed-integer facility-location and transportation model.
+
+---
+
+# Model 2 — Seller-State Assignment
+
+Model 2 considers a different logistics decision.
+
+Each customer state is assigned to a single seller state while respecting seller-state fulfillment capacity.
+
+This creates a contrast between:
+
+| Model 1                            | Model 2                          |
+| ---------------------------------- | -------------------------------- |
+| Opens distribution hubs            | Uses existing seller states      |
+| Allows shipment splitting          | Single-source assignment         |
+| Facility-location + transportation | Assignment / integer programming |
+| Infrastructure decision            | Allocation decision              |
+
+The comparison allows the project to demonstrate two distinct optimization formulations rather than simply solving the same model twice.
+
+---
+
+# Sensitivity Analysis
+
+The dashboard provides scenario analysis around the validated optimization models.
+
+The implemented experiments include:
+
+* facility fixed-cost sensitivity;
+* hub-capacity sensitivity;
+* demand-growth sensitivity;
+* transportation-cost stress;
+* fixed-cost × capacity scenarios;
+* Model 2 capacity sensitivity;
+* transportation-only capacity benchmarking.
+
+Sensitivity analysis is used to study how changes in important parameters affect:
+
+* total optimization cost;
+* selected hubs;
+* capacity utilization;
+* transportation flows;
+* feasibility;
+* model preference.
+
+---
+
+# Dataset
+
+The project uses the publicly available **Brazilian E-Commerce by Olist** dataset.
+
+Source:
+
+https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+
+The nine required tables are:
 
 ```text
 olist_customers_dataset.csv
@@ -58,82 +204,291 @@ olist_sellers_dataset.csv
 product_category_name_translation.csv
 ```
 
-The dataset is publicly available through Kaggle:
+The dataset contains approximately 100,000 orders and provides customer, seller, product, payment, review, order, and geographic information.
 
-https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+### Dataset handling
 
-**The CSV files are intentionally not included in this Git repository.**
+The raw CSV files are **not committed to this Git repository**.
 
-## Project structure
+This keeps the repository lightweight and reproducible while allowing the application to work with the original public dataset.
+
+Users can either:
+
+1. place the nine CSV files inside `data/`; or
+2. specify their location using `OLIST_DATA_DIR`.
+
+---
+
+# Real Data Pipeline
+
+The project does not rely on synthetic data for its final analytical results.
+
+The Phase 1 pipeline performs:
+
+### 1. Schema validation
+
+Validates the required Olist tables and their expected structure.
+
+### 2. Geographic preprocessing
+
+Processes:
+
+* customer ZIP-code prefixes;
+* seller ZIP-code prefixes;
+* Olist geolocation data;
+* latitude/longitude;
+* state-level geographic aggregation;
+* customer-to-seller/hub distance information.
+
+### 3. Demand construction
+
+Customer demand is aggregated at state level.
+
+The final Olist dataset contains:
 
 ```text
-olist_or_dashboard/
+Orders:          99,441
+Customer states: 27
+Seller states:   23
+```
+
+### 4. Seller capacity construction
+
+Seller-state capacity is derived from the actual seller/order-item data rather than being manually entered for the final real-data pipeline.
+
+### 5. Transportation-cost calibration
+
+Transportation costs are calibrated using the real Olist logistics data and the project's documented assumptions.
+
+---
+
+# Validated Real-Olist Results
+
+The complete Phase 1 → Phase 2 pipeline was executed against the actual Olist dataset.
+
+### Dataset validation
+
+| Metric               | Result |
+| -------------------- | -----: |
+| Orders               | 99,441 |
+| Customer states      |     27 |
+| Seller states        |     23 |
+| Transportation lanes |    621 |
+
+### Model 1
+
+| Metric        |         Result |
+| ------------- | -------------: |
+| Objective     | R$2,254,243.14 |
+| Selected hubs |     SP, MG, PR |
+| Status        |        Optimal |
+
+### Model 2
+
+| Metric             |         Result |
+| ------------------ | -------------: |
+| Objective          | R$2,052,400.80 |
+| Seller states used |             13 |
+| Status             |        Optimal |
+
+These values are outputs from the actual Olist preprocessing and optimization pipeline, not synthetic demonstration data.
+
+---
+
+# Dashboard
+
+The application is implemented using **Streamlit**.
+
+The main workflow is:
+
+```text
+┌───────────────────────────────────────┐
+│ Upload & Validation                   │
+└───────────────────┬───────────────────┘
+                    ↓
+┌───────────────────────────────────────┐
+│ Data & Statistics                     │
+└───────────────────┬───────────────────┘
+                    ↓
+┌───────────────────────────────────────┐
+│ Model 1 — Facility Location           │
+└───────────────────┬───────────────────┘
+                    ↓
+┌───────────────────────────────────────┐
+│ Model 2 — Seller Assignment            │
+└───────────────────┬───────────────────┘
+                    ↓
+┌───────────────────────────────────────┐
+│ Sensitivity Analysis                  │
+└───────────────────┬───────────────────┘
+                    ↓
+┌───────────────────────────────────────┐
+│ Maps & Result Visualizations           │
+└───────────────────┬───────────────────┘
+                    ↓
+┌───────────────────────────────────────┐
+│ Model Comparison & Downloads           │
+└───────────────────────────────────────┘
+```
+
+---
+
+# Architecture
+
+The application separates data engineering, optimization, analytics, validation, and presentation.
+
+```text
+                         Streamlit UI
+                              │
+             ┌────────────────┼────────────────┐
+             │                │                │
+          Upload           Models         Analytics
+             │                │                │
+             ↓                ↓                ↓
+       Validation       Model 1 / Model 2   Sensitivity
+             │                │                │
+             └────────────────┼────────────────┘
+                              ↓
+                    Canonical Data Bundle
+                              ↑
+                              │
+                    Phase 1 Data Pipeline
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        │                     │                     │
+    Olist Data          Geography             Calibration
+```
+
+The Streamlit application acts primarily as the presentation and orchestration layer.
+
+The analytical responsibilities remain separated:
+
+### Data layer
+
+* schema validation;
+* Olist preprocessing;
+* geographic processing;
+* demand construction;
+* seller-capacity construction;
+* transportation-cost calibration.
+
+### Optimization layer
+
+* Model 1;
+* Model 2;
+* optimization result contracts;
+* scenario execution;
+* model comparison.
+
+### Analytics layer
+
+* sensitivity experiments;
+* scenario summaries;
+* benchmark analysis.
+
+### UI layer
+
+* upload interface;
+* statistics;
+* model controls;
+* maps;
+* charts;
+* result tables;
+* downloads.
+
+This separation prevents the dashboard from duplicating the underlying analytical logic.
+
+---
+
+# Project Structure
+
+```text
+olist-operations-research/
+│
 ├── app.py
+├── README.md
 ├── requirements.txt
 ├── requirements-dev.txt
-├── README.md
 ├── .gitignore
+├── .env.example
+│
 ├── .streamlit/
 │   └── config.toml
+│
 ├── data/
 │   └── README.md
+│
 ├── phase1_outputs/
 │   └── PHASE_1_4_CALIBRATION.json
+│
 ├── src/
 │   ├── data/
 │   ├── optimization/
 │   ├── analytics/
 │   ├── validation/
 │   └── ui/
+│
 ├── scripts/
-│   ├── run_release_gate.py
-│   └── run_full_e2e.py
+│   ├── run_full_e2e.py
+│   └── run_release_gate.py
+│
 └── tests/
+    ├── test_live_app.py
+    ├── test_olist_e2e.py
+    ├── test_phase2_9.py
+    ├── test_phase2_10.py
+    ├── test_phase2_11.py
+    └── test_phase2_12.py
 ```
 
-## Local setup
+---
 
-### 1. Clone
+# Installation
+
+## 1. Clone the repository
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-cd olist_or_dashboard
+git clone https://github.com/tsar0705/olist-operations-research.git
+cd olist-operations-research
 ```
 
-### 2. Create a virtual environment
+## 2. Create a virtual environment
 
-Windows:
+### Windows
 
 ```bat
 python -m venv .venv
 .venv\Scripts\activate
 ```
 
-macOS/Linux:
+### macOS/Linux
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Install dependencies
+## 3. Install dependencies
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-For development/testing:
+For development and testing:
 
 ```bash
 python -m pip install -r requirements-dev.txt
 ```
 
-### 4. Place the Olist data
+---
 
-Recommended layout:
+# Add the Olist Dataset
+
+Recommended structure:
 
 ```text
-olist_or_dashboard/
+olist-operations-research/
+│
 ├── data/
 │   ├── olist_customers_dataset.csv
 │   ├── olist_geolocation_dataset.csv
@@ -144,127 +499,177 @@ olist_or_dashboard/
 │   ├── olist_products_dataset.csv
 │   ├── olist_sellers_dataset.csv
 │   └── product_category_name_translation.csv
+│
 └── ...
 ```
 
-Alternatively, point the E2E runner at another directory:
+Alternatively:
+
+### Windows
 
 ```bat
 set OLIST_DATA_DIR=C:\path\to\olist-data
 ```
 
-## Run the dashboard
+### macOS/Linux
+
+```bash
+export OLIST_DATA_DIR=/path/to/olist-data
+```
+
+---
+
+# Run the Dashboard
 
 ```bash
 python -m streamlit run app.py
 ```
 
-Then open the local Streamlit URL shown in the terminal.
+Streamlit will display the local URL in the terminal.
 
-The dashboard workflow is:
+---
 
-```text
-Upload / Validate
-       ↓
-Data & Statistics
-       ↓
-Model 1
-       ↓
-Model 2
-       ↓
-Sensitivity Analysis
-       ↓
-Maps / Result Visualizations
-       ↓
-Model Comparison & Downloads
-       ↓
-Release / Architecture Status
-```
+# Testing
 
-## Run the tests
-
-Full test suite:
+Run the complete automated test suite:
 
 ```bash
 python -m pytest -q
 ```
 
-Real Olist end-to-end pipeline:
+The validated project currently passes:
+
+```text
+25 passed
+```
+
+Run the complete real-Olist pipeline:
 
 ```bash
 python scripts/run_full_e2e.py
 ```
 
-Release gate:
+Run the release gate:
 
 ```bash
 python scripts/run_release_gate.py
 ```
 
-## Validated Olist benchmark
+The end-to-end test validates:
 
-The final real-data E2E run produced:
+* Olist data discovery;
+* canonical preprocessing;
+* demand construction;
+* geographic processing;
+* transportation lanes;
+* Model 1;
+* Model 2;
+* model comparison.
 
-| Metric | Result |
-|---|---:|
-| Orders | 99,441 |
-| Customer states | 27 |
-| Seller states | 23 |
-| Transportation lanes | 621 |
-| Model 1 objective | R$2,254,243.14 |
-| Model 1 hubs | SP, MG, PR |
-| Model 2 objective | R$2,052,400.80 |
-| Model 2 seller states used | 13 |
+---
 
-The benchmark values are validation outputs from the project's actual Olist preprocessing and optimization pipeline, not synthetic demo data.
+# Reproducibility
 
-## Important data/reproducibility note
+For a fresh reproduction:
 
-Do not commit the nine Olist CSV files to GitHub.
+```text
+1. Clone repository
+2. Download Olist dataset
+3. Place nine CSV files in data/
+4. Create virtual environment
+5. Install requirements
+6. Run pytest
+7. Run full E2E validation
+8. Launch Streamlit
+```
 
-For a clean submission/reproduction:
+The raw Olist dataset is intentionally excluded from GitHub.
 
-1. clone the repository;
-2. download the Olist dataset from its public source;
-3. place the nine CSV files under `data/`, or set `OLIST_DATA_DIR`;
-4. run the tests;
-5. launch Streamlit.
+---
 
-## Architecture principle
+# Operations Research Concepts Demonstrated
 
-The Streamlit application is intentionally a presentation/orchestration layer.
+This project applies concepts from the Operations Research syllabus, including:
 
-The canonical Phase 1 preprocessing pipeline owns:
+* Linear Programming;
+* Transportation Models;
+* Assignment Models;
+* Integer Programming;
+* Facility Location;
+* Capacity-Constrained Optimization;
+* Sensitivity Analysis;
+* Network/Logistics Optimization;
+* Scenario Analysis;
+* Interpretation of Optimization Results.
 
-- schema validation;
-- geographic preprocessing;
-- demand construction;
-- seller capacity construction;
-- transportation-cost calibration.
+The project therefore demonstrates both **mathematical formulation** and **practical decision-support implementation**.
 
-The optimization layer owns the mathematical models.
+---
 
-The UI consumes those validated outputs rather than rebuilding analytical logic inside Streamlit.
+# Limitations and Assumptions
 
-## Academic scope
+Some model parameters are not directly available in the Olist dataset.
 
-This project demonstrates concepts from the Operations Research syllabus including:
+In particular, facility-related costs and capacity assumptions require explicit modelling assumptions or calibrated proxies.
 
-- linear programming;
-- transportation models;
-- assignment models;
-- integer programming;
-- facility location;
-- sensitivity analysis;
-- network/logistics optimization;
-- interpretation of optimization results.
+These assumptions are kept separate from the raw Olist data and documented in the Phase 1 calibration outputs.
 
-## License / dataset attribution
+Consequently, the optimization results should be interpreted as a **decision-support model under the stated assumptions**, rather than as a reconstruction of Olist's historical logistics network.
 
-The application code can be used for educational purposes. The Olist dataset remains subject to its original source terms and attribution requirements.
+---
 
-## Status
+# Academic Project Deliverables
 
-**Phase 3.1 — GitHub-ready cleanup: complete**
+The repository contains:
 
-Before public submission, run the release gate and verify the local Streamlit smoke test in the target environment.
+* source code;
+* preprocessing pipeline;
+* mathematical optimization models;
+* validation tests;
+* sensitivity analysis;
+* Streamlit dashboard;
+* end-to-end test runner;
+* release-gate checks;
+* Phase 2 development reports.
+
+The raw dataset is distributed separately through its public source.
+
+---
+
+# Dataset Attribution
+
+Brazilian E-Commerce Public Dataset by Olist:
+
+https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+
+Please refer to the original dataset source for its applicable terms and attribution requirements.
+
+---
+
+# Project Status
+
+**Phase 3.2 — GitHub verification and final documentation: complete**
+
+Validated implementation status:
+
+```text
+Phase 1 — Data & Optimization Foundation      ✅
+Phase 2 — Dashboard Development               ✅
+Phase 2.11 — E2E Testing                      ✅
+Phase 2.12 — UI Polish & Hardening            ✅
+Phase 3.1 — GitHub-ready Package              ✅
+Phase 3.2 — Final Documentation               ✅
+Phase 3.3 — Deployment & Professor Demo        🔄
+```
+
+Latest validated test result:
+
+```text
+25 passed
+```
+
+---
+
+## Repository
+
+https://github.com/tsar0705/olist-operations-research
