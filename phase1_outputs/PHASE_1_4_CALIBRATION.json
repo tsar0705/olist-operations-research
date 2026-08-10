@@ -1,0 +1,52 @@
+{
+  "target": "historical_freight_value / distinct_order_count",
+  "target_unit": "Olist currency units per order",
+  "weight": "distinct order_count per state-to-state lane",
+  "candidate_models": [
+    "distance_only",
+    "distance_plus_items",
+    "distance_items_quadratic"
+  ],
+  "selected_model": "distance_only",
+  "selected_features": [
+    "distance_km"
+  ],
+  "selected_coefficients": [
+    16.6466782418418,
+    0.01132790711123307
+  ],
+  "selected_in_sample_metrics": {
+    "weighted_RMSE": 3.4908915107539182,
+    "weighted_MAE": 2.44471913473409,
+    "weighted_R2": 0.7999923414598047
+  },
+  "cross_validation": [
+    {
+      "model": "distance_only",
+      "cv_weighted_RMSE": 3.990192532984809,
+      "cv_weighted_MAE": 3.0000494843113685,
+      "cv_weighted_R2": 0.6586840992196084
+    },
+    {
+      "model": "distance_plus_items",
+      "cv_weighted_RMSE": 3.9909852949101112,
+      "cv_weighted_MAE": 3.020291846561592,
+      "cv_weighted_R2": 0.6592727353566906
+    },
+    {
+      "model": "distance_items_quadratic",
+      "cv_weighted_RMSE": 4.179735231502757,
+      "cv_weighted_MAE": 3.1494851224866145,
+      "cv_weighted_R2": 0.6271401650893187
+    }
+  ],
+  "global_items_per_order_for_unobserved_lanes": 1.1357793170200539,
+  "observed_lane_weighted_MAE": 2.4447191347340906,
+  "observed_lane_weighted_RMSE": 3.490891510753918,
+  "cost_matrix_shape": [
+    23,
+    27
+  ],
+  "negative_predicted_costs_clipped_to_zero": true,
+  "interpretation": "The calibrated cost is a scenario estimate of transportation freight per customer order, derived from historical Olist lane freight and geographic distance. It is not claimed to be an actual contractual carrier tariff."
+}
