@@ -6,6 +6,10 @@ The project combines real-world e-commerce data preprocessing, geographic analys
 
 **GitHub:** https://github.com/tsar0705/olist-operations-research
 
+**Live Demo:** https://olist-operations-research-r5gnvwb5n5v7em9a9appuii.streamlit.app/
+
+> **Repository description:** Operations Research decision-support dashboard for Olist e-commerce logistics, combining real-data preprocessing, geographic analysis, facility location, transportation, seller assignment, sensitivity analysis, validation, and interactive Streamlit visualizations.
+
 ---
 
 ## Project Overview
@@ -221,7 +225,7 @@ Users can either:
 
 # Real Data Pipeline
 
-The project does not rely on synthetic data for its final analytical results.
+The project **does not** use synthetic/demo data for its final analytical results.
 
 The Phase 1 pipeline performs:
 
@@ -648,7 +652,7 @@ Please refer to the original dataset source for its applicable terms and attribu
 
 # Project Status
 
-**Phase 3.2 — GitHub verification and final documentation: complete**
+**Phase 3.3 — Deployment & Professor Demo: complete**
 
 Validated implementation status:
 
@@ -659,7 +663,7 @@ Phase 2.11 — E2E Testing                      ✅
 Phase 2.12 — UI Polish & Hardening            ✅
 Phase 3.1 — GitHub-ready Package              ✅
 Phase 3.2 — Final Documentation               ✅
-Phase 3.3 — Deployment & Professor Demo        🔄
+Phase 3.3 — Deployment & Professor Demo        ✅
 ```
 
 Latest validated test result:
