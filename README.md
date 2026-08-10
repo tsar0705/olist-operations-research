@@ -673,3 +673,9 @@ Latest validated test result:
 ## Repository
 
 https://github.com/tsar0705/olist-operations-research
+
+## Live Demo
+
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://olist-operations-research-r5gnvwb5n5v7em9a9appuii.streamlit.app)
+
+**Live Dashboard:** https://olist-operations-research-r5gnvwb5n5v7em9a9appuii.streamlit.app
