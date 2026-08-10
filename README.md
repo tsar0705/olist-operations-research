@@ -59,65 +59,80 @@ Model 1 determines:
 
 ### Decision variables
 
-[
+$$
 y_i =
 \begin{cases}
-1 & \text{if candidate hub } i \text{ is opened}\
-0 & \text{otherwise}
+1, & \text{if candidate hub } i \text{ is opened},\\
+0, & \text{otherwise}.
 \end{cases}
-]
+$$
 
-[
+$$
 x_{ij} \geq 0
-]
+$$
 
-where (x_{ij}) represents the quantity transported from hub (i) to customer region (j).
+where $x_{ij}$ represents the quantity transported from hub $i$ to customer region $j$.
+
+
+### Model 1 notation
+
+| Symbol | Meaning |
+|---|---|
+| $i$ | Candidate hub / facility |
+| $j$ | Customer demand region / state |
+| $D_j$ | Demand at customer region $j$ |
+| $Cap_i$ | Capacity of candidate hub $i$ |
+| $F_i$ | Fixed cost of opening hub $i$ |
+| $C_{ij}$ | Unit transportation cost from hub $i$ to region $j$ |
+| $x_{ij}$ | Quantity shipped from hub $i$ to region $j$ |
+| $y_i$ | Binary hub-opening decision |
+
 
 ### Objective
 
-[
+$$
 \min
 \left(
 \sum_i F_i y_i
 +
 \sum_i \sum_j C_{ij}x_{ij}
 \right)
-]
+$$
 
 where:
 
-* (F_i) = fixed cost of opening hub (i);
-* (C_{ij}) = transportation cost per unit from hub (i) to customer region (j);
-* (x_{ij}) = shipment quantity;
-* (y_i) = hub-opening decision.
+* $F_i$ = fixed cost of opening hub $i$;
+* $C_{ij}$ = transportation cost per unit from hub $i$ to customer region $j$;
+* $x_{ij}$ = shipment quantity;
+* $y_i$ = hub-opening decision.
 
 ### Main constraints
 
 **Demand satisfaction**
 
-[
+$$
 \sum_i x_{ij} = D_j
 \qquad \forall j
-]
+$$
 
 **Hub capacity**
 
-[
+$$
 \sum_j x_{ij} \leq Cap_i y_i
 \qquad \forall i
-]
+$$
 
 **Hub-opening decision**
 
-[
-y_i \in {0,1}
-]
+$$
+y_i \in \{0,1\}
+$$
 
 **Shipment non-negativity**
 
-[
+$$
 x_{ij} \geq 0
-]
+$$
 
 This is a mixed-integer facility-location and transportation model.
 
@@ -633,7 +648,7 @@ Please refer to the original dataset source for its applicable terms and attribu
 
 # Project Status
 
-**Phase 3.2 — GitHub verification and final documentation: in progress**
+**Phase 3.2 — GitHub verification and final documentation: complete**
 
 Validated implementation status:
 
@@ -643,7 +658,8 @@ Phase 2 — Dashboard Development               ✅
 Phase 2.11 — E2E Testing                      ✅
 Phase 2.12 — UI Polish & Hardening            ✅
 Phase 3.1 — GitHub-ready Package              ✅
-Phase 3.2 — Final Documentation               🔄
+Phase 3.2 — Final Documentation               ✅
+Phase 3.3 — Deployment & Professor Demo        🔄
 ```
 
 Latest validated test result:
