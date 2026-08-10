@@ -652,7 +652,7 @@ Please refer to the original dataset source for its applicable terms and attribu
 
 # Project Status
 
-**Phase 3.3 — Deployment & Professor Demo: complete**
+**Phase 3.3 — Deployment: complete**
 
 Validated implementation status:
 
